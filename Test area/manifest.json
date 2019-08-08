@@ -1,0 +1,37 @@
+{
+  "name": "Datind AutoLiker",
+  "description" : "Autolike on mamba.ru , fotostrana.ru",
+  "version": "1.0",
+  "browser_action": {
+    "default_popup": "popout.html",
+    "default_icon": {
+      "16": "images/love-16х16.png",
+      "32": "images/love-32х32.png",
+      "48": "images/love-48х48.png",
+      "128": "images/love-128х128.png"
+    }
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F",
+        "mac": "MacCtrl+Shift+F"
+      },
+      "description": "Opens hello.html"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [ "*://*/*" ],
+      "js": [ "content.js" ]
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "permissions": [
+    "https://mamba.ua/"
+  ],
+  "manifest_version": 2
+}

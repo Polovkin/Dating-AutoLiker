@@ -1,0 +1,44 @@
+{
+  "name": "Datind AutoLiker",
+  "description": "Autolike on tinder.com, baddom.com, topface.ru, mamba.ru , fotostrana.ru baddom.com",
+  "version": "1.0",
+  "browser_action": {
+    "default_popup": "popout.html",
+    "default_icon": {
+      "16": "icons/love-16х16.png",
+      "32": "icons/love-32х32.png",
+      "48": "icons/love-48х48.png",
+      "128": "icons/love-128х128.png"
+    }
+  },
+  "icons": {
+    "48": "icons/love-48х48.png",
+    "128": "icons/love-128х128.png"
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F",
+        "mac": "MacCtrl+Shift+F"
+      },
+      "description": "autolike"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*/*"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ],
+  "permissions": [
+    "https://mamba.ua/*",
+    "https://badoo.com/*",
+    "https://tinder.com/*",
+    "https://fotostrana.ru/*"
+  ],
+  "manifest_version": 2
+}
