@@ -95,22 +95,22 @@ let datingSites = [
             }, getRandomArbitrary(300, 500));
         }
     },
-    {
-        name: 'badoo',
-        addressUrl: 'https://badoo.com',
-        addressVote: 'https://badoo.com/encounters',
-        voteFunction: function badooAutoLike() {
-            let i = 0;
-            const likeButton = document.getElementsByClassName("profile-action--yes");
-            const timer = window.setInterval(function clickFor() {
-                if (i === 300) {
-                    window.clearInterval(timer);
-                }
-                i++;
-                likeButton[0].click();
-            }, getRandomArbitrary(300, 500));
-        }
-    },
+    // {
+    //     name: 'badoo',
+    //     addressUrl: 'https://badoo.com',
+    //     addressVote: 'https://badoo.com/encounters',
+    //     voteFunction: function badooAutoLike() {
+    //         let i = 0;
+    //         const likeButton = document.getElementsByClassName("profile-action--yes");
+    //         const timer = window.setInterval(function clickFor() {
+    //             if (i === 300) {
+    //                 window.clearInterval(timer);
+    //             }
+    //             i++;
+    //             likeButton[0].click();
+    //         }, getRandomArbitrary(300, 500));
+    //     }
+    // },
 ];
 
 checkUrl();
