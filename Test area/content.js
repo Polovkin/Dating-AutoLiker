@@ -1,42 +1,38 @@
+let idArr = document.querySelectorAll('.tf-rd-feed-body_item-new');
+alert(idArr[1]);
 
+function clickOnMail() {
+    let arr = document.querySelectorAll('tbody tr');
+    for (let i = 0; i < arr.length; i++) {
+        if (i % 3 === 0) {
 
-window.count = 0;
-window.started = false;
-
-function start() {
-  console.log('start');
-
-    started = true;
-    window.badooInterval = setInterval(e => {
-      window.document.querySelectorAll('sidebar__logo').click();
-      let limit = document.querySelectorAll('.ovl__content');
-      if (!limit.length && eval(`limit[0].innerText.search("You're out of votes!") > -1`)) {
-        console.log('усе! концерт окончен.!. приходите завтра,1,')
-        clearInterval(window.badooInterval);
-        console.log('Успели поставить лайков => ' + count);
-      } else {
-        window.createDiv();
-        count++;
-        console.log('Поставили лайков => ' + count);
-      }
-
-    }, 1000);
-
+        }
+    }
 }
-start();
-function stop() {
-  console.log('stop')
-  clearInterval(window.badooInterval);
-  started = false;
-}
-function mouseEnter(e) {
-  e.target.style.background = 'red'
-  e.target.style.border = "3px solid red"
-}
-function mouseLeave(e) {
-  e.target.style.background = 'unset'
-  e.target.style.border = "3px solid white"
+
+clickOnMail();
+
+
+arr = document.querySelectorAll('tbody tr[role="row"]');
+for (let i = 0; i < arr.length; i++) {
+    if (i===3) {
+        idName = arr[i].getAttribute('id');
+        document.getElementById(idName).click();
+    }
 }
 
 
 
+arr = document.querySelectorAll('li[data-tooltip="Архивировать"]');
+let className;
+for (let i = 0; i < arr.length; i++) {
+    if (i % 2 === 0) {
+        setInterval()
+        let a = arr[i].getAttribute('class');
+        className = a.split(' ')[0];
+        document.getElementsByClassName(className)[0].click();
+    }
+}
+
+documnet.getElementsByTagName().click();
+document.getElementsByClassName('profile-action--yes')[0].click();
