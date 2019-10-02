@@ -2,14 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1c73644d-244d-48bf-b427-e27b28c6aea3" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/outside js/background.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outside js/content.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outside js/css/.sass-cache/61f028cf43c40e9e21bf3337c62d21958a006181/styles.sassc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outside js/css/styles.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outside js/css/styles.css.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outside js/css/styles.sass" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outside js/manifest.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outside js/popout.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test area/content.js" beforeDir="false" afterPath="$PROJECT_DIR$/Test area/content.js" afterDir="false" />
     </list>
@@ -84,7 +76,7 @@
       <workItem from="1569855361053" duration="8000" />
       <workItem from="1569913713150" duration="623000" />
       <workItem from="1569931122041" duration="2845000" />
-      <workItem from="1570002407068" duration="6226000" />
+      <workItem from="1570002407068" duration="17072000" />
     </task>
     <task id="LOCAL-00001" summary="Onclick">
       <created>1569854577276</created>
@@ -100,7 +92,14 @@
       <option name="project" value="LOCAL" />
       <updated>1569933873529</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Optimise">
+      <created>1570011850279</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1570011850279</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -122,6 +121,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Onclick" />
     <MESSAGE value="Get a city and id filter" />
-    <option name="LAST_COMMIT_MESSAGE" value="Get a city and id filter" />
+    <MESSAGE value="Optimise" />
+    <option name="LAST_COMMIT_MESSAGE" value="Optimise" />
   </component>
 </project>
