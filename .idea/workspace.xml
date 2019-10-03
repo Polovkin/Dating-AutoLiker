@@ -76,7 +76,8 @@
       <workItem from="1569855361053" duration="8000" />
       <workItem from="1569913713150" duration="623000" />
       <workItem from="1569931122041" duration="2845000" />
-      <workItem from="1570002407068" duration="17072000" />
+      <workItem from="1570002407068" duration="17353000" />
+      <workItem from="1570091758602" duration="8108000" />
     </task>
     <task id="LOCAL-00001" summary="Onclick">
       <created>1569854577276</created>
@@ -99,7 +100,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570011850279</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Work!">
+      <created>1570022691044</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1570022691044</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -122,6 +130,7 @@
     <MESSAGE value="Onclick" />
     <MESSAGE value="Get a city and id filter" />
     <MESSAGE value="Optimise" />
-    <option name="LAST_COMMIT_MESSAGE" value="Optimise" />
+    <MESSAGE value="Work!" />
+    <option name="LAST_COMMIT_MESSAGE" value="Work!" />
   </component>
 </project>
