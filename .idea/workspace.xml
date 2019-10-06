@@ -4,6 +4,14 @@
     <list default="true" id="1c73644d-244d-48bf-b427-e27b28c6aea3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test area/content.js" beforeDir="false" afterPath="$PROJECT_DIR$/Test area/content.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/outside js/background.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/outside js/content.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/outside js/css/.sass-cache/61f028cf43c40e9e21bf3337c62d21958a006181/styles.sassc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/outside js/css/styles.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/outside js/css/styles.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/outside js/css/styles.sass" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/outside js/manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/outside js/popout.html" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -78,6 +86,7 @@
       <workItem from="1569931122041" duration="2845000" />
       <workItem from="1570002407068" duration="17353000" />
       <workItem from="1570091758602" duration="8108000" />
+      <workItem from="1570384046216" duration="2393000" />
     </task>
     <task id="LOCAL-00001" summary="Onclick">
       <created>1569854577276</created>

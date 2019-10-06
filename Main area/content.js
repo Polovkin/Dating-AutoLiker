@@ -51,7 +51,7 @@ let datingSites = [
             let btnSkipName = '.button_white_zone a:last-child';
             let i = 0;
             const timer = window.setInterval(function clickFor() {
-                if (i === 250) {
+                if (i === 1000) {
                     window.clearInterval(timer);
                 }
                 i++;
@@ -61,7 +61,7 @@ let datingSites = [
                 // } else {
                 //     document.querySelector(btnSkipName).click();
                 // }
-            }, getRandomArbitrary(610, 700));
+            }, getRandomArbitrary(200, 400));
         }
     },
     {

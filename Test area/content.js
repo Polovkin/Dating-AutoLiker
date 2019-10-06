@@ -1,7 +1,7 @@
 let bodyItemClass = 'tf-rd-feed-body_item';
 let mainArr = document.getElementsByClassName(bodyItemClass);
 let arrId = [];
-
+let openerArr = [];
 function getRandomArbitrary(min, max) {
     return Math.ceil(Math.random() * (max - min) + min);
 }
@@ -40,11 +40,8 @@ function useChatWindow(className) {
 }
 
 function sendMassage(arr,i) {
-    let closeWindow = () => {
-        useChatWindow('messenger-title-button messenger-title-button-close').click()
-    };
     let inputMsg = () => {
-        useChatWindow('messenger-chat-compose-input').value = 'Как успехи?';
+        useChatWindow('messenger-chat-compose-input').value = 'Привет,ты мне понравилась. Когда можем встретится погулять?';
     };
     let send = () => {
         useChatWindow('messenger-chat-compose-send blue-button').click();
@@ -55,8 +52,6 @@ function sendMassage(arr,i) {
     setTimeout(inputMsg, 1000);
     //Send
     setTimeout(send, 2000);
-    //Timeout close
-    setTimeout(closeWindow, 2500);
 }
 
 //Наконец-то работает
@@ -73,14 +68,15 @@ function start(arr) {
         if (j === arr.length) {
             window.clearInterval(timer);
         }
-        sendMassage(arr,j);
-        deleteProfile(arr,j);
+        sendMassage(arr,0);
+        deleteProfile(arr,0);
         refreshArr();
         j++;
     }, 3000);
 }
 
 //Надо удалять с начала массива
+
 
 
 
