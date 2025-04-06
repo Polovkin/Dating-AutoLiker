@@ -11,7 +11,7 @@
 
 <div class="container mx-auto p-4">
     <button class="w-full" on:click={increment}>
-        Start {$counter}
+        Start {$counter} 1
     </button>
 </div>
 

@@ -1,8 +1,3 @@
-import browser from "webextension-polyfill";
+import LoggerService from "./services/logger.service";
 
-console.log("Hello from the background!");
-
-browser.runtime.onInstalled.addListener((details) => {
-  console.log("Extension installed:", details);
-});
-
+LoggerService.info("Background script running...")
