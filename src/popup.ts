@@ -4,5 +4,3 @@ import LoggerService from "./services/logger.service";
 
 mount(Popup, { target: document.body });
 
-LoggerService.info("popup script running...")
-
