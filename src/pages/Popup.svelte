@@ -1,8 +1,5 @@
 <script lang="ts">
     import AppButton from "../components/AppButton.svelte";
-    import {onMount} from "svelte";
-
-    let url: string = 'some url';
 
 </script>
 
@@ -10,7 +7,6 @@
     <AppButton>
         Start
     </AppButton>
-    <p>Url: {url}</p>
 </div>
 
 <style>
