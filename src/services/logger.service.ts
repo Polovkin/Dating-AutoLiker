@@ -1,9 +1,13 @@
+import {IS_ENV_DEV} from "../constants";
+
 type LogLevel = 'info' | 'error' | 'warn';
 
 class LoggerService {
 
     public info(message: string): void {
-        this.logToFile(message, 'info');
+        if (IS_ENV_DEV) {
+            this.logToFile(message, 'info');
+        }
     }
 
     public error(message: string): void {
