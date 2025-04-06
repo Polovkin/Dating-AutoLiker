@@ -3,11 +3,10 @@
 </script>
 
 <div>
-  <img src="/icon-with-shadow.svg" alt="" />
-  <h1>vite-plugin-web-extension</h1>
-  <p>
-    Template: <code>svelte-ts</code>
-  </p>
+  <h1 class="text-2xl text-red-500 font-bold underline">
+    Hello world!1
+  </h1>
+
 </div>
 
 <style>
