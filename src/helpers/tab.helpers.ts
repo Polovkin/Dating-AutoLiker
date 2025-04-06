@@ -1,6 +1,5 @@
 import browser from "webextension-polyfill";
 import LoggerService from "../services/logger.service";
-import {ALLOWED_URLS} from "../constants";
 
 
 export async function executeInActiveTab<T>(fn: () => T): Promise<T | null> {

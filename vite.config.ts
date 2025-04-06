@@ -1,6 +1,6 @@
-import { defineConfig } from "vite";
-import { svelte } from "@sveltejs/vite-plugin-svelte";
-import webExtension, { readJsonFile } from "vite-plugin-web-extension";
+import {defineConfig} from "vite";
+import {svelte} from "@sveltejs/vite-plugin-svelte";
+import webExtension, {readJsonFile} from "vite-plugin-web-extension";
 // @ts-ignore
 import tailwindcss from "@tailwindcss/vite";
 
