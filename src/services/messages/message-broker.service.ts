@@ -1,7 +1,7 @@
 import browser from "webextension-polyfill";
 import type { IMessage, MessageType, MessageTarget } from "@/types/common.types";
 import { MessageType as MessageTypeEnum, MessageTarget as MessageTargetEnum } from "@/types/common.types";
-import AppLogger from "./logger.service";
+import AppLogger from "../logger.service";
 
 class MessageBrokerService {
   private logger = AppLogger;
@@ -55,7 +55,7 @@ class MessageBrokerService {
   setupMessageListener(handler: (message: IMessage, sender: any) => void): void {
     browser.runtime.onMessage.addListener((message: IMessage, sender, sendResponse?: (response?: any) => void) => {
       this.logger.debug('Received message', { message, sender });
-      
+
       try {
         handler(message, sender);
         if (sendResponse) {
@@ -67,7 +67,7 @@ class MessageBrokerService {
           sendResponse({ success: false, error: (error as Error).message });
         }
       }
-      
+
       return true; // Keep message channel open for async response
     });
   }

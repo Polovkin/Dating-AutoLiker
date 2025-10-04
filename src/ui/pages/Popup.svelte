@@ -1,19 +1,14 @@
 <script lang="ts">
-    import {writable} from "svelte/store";
-
-    const counter = writable(0);
-
-    const increment = () => {
-        counter.update(n => n + 1);
-    }
+    import Timer from "../components/Timer.svelte";
 </script>
 
 <div class="container mx-auto p-4">
-    <button class="w-full" on:click={increment}>
-        Start {$counter}
-    </button>
+    <Timer defaultDuration={300} />
 </div>
 
 <style>
-
+    .container {
+        min-width: 300px;
+        max-width: 400px;
+    }
 </style>

@@ -1,4 +1,4 @@
-import MessageBrokerService from "./message-broker.service";
+import MessageBrokerService from "./messages/message-broker.service";
 import SettingsService from "./settings.service";
 import AppLogger from "./logger.service";
 import type { ActionResultPayload } from "@/types/common.types";
@@ -116,7 +116,7 @@ class AutoSwipeEngine {
 
     } catch (error) {
       this.logger.error('Error in swipe loop', error);
-      
+
       // If we can't communicate with content script, stop the engine
       await this.stop('Content script communication error');
       return;
