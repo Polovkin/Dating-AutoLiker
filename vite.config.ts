@@ -3,6 +3,7 @@ import {svelte} from "@sveltejs/vite-plugin-svelte";
 import webExtension, {readJsonFile} from "vite-plugin-web-extension";
 // @ts-ignore
 import tailwindcss from '@tailwindcss/vite'
+import path from "path";
 
 function generateManifest() {
     const manifest = readJsonFile("src/manifest.json");
@@ -25,4 +26,13 @@ export default defineConfig({
             watchFilePaths: ["package.json", "manifest.json"],
         }),
     ],
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "./src"),
+            "@/services": path.resolve(__dirname, "./src/services"),
+            "@/types": path.resolve(__dirname, "./src/types"),
+            "@/utils": path.resolve(__dirname, "./src/utils"),
+            "@/ui": path.resolve(__dirname, "./src/ui"),
+        },
+    },
 });

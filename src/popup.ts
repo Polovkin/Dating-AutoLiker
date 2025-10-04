@@ -1,4 +1,4 @@
-import Popup from './ui/pages/Popup.svelte'
+import Popup from '@/ui/pages/Popup.svelte'
 import {mount} from "svelte";
 
 const app = document.getElementById('app');

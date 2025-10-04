@@ -1,4 +1,4 @@
-import DateFormatterUtil from "../utils/date-formatter.util";
+import DateFormatterUtil from "@/utils/date-formatter.util";
 
 type LogLevel = 'info' | 'warn' | 'error' | 'debug'
 

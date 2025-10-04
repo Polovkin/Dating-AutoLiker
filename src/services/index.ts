@@ -4,23 +4,21 @@
 
 // Core services
 export { default as MessageBrokerService } from './message-broker.service';
+export { default as SettingsService } from './settings.service';
+export { default as AutoSwipeEngine } from './auto-swipe-engine.service';
 export { default as AppLogger } from './logger.service';
 
 // Re-export types for convenience
 export type { 
-    IMessageBroker, 
-    IMessage, 
-    IMessageSender, 
-    MessageTarget, 
     MessageType,
+    MessageTarget,
+    IMessage,
     StartEnginePayload,
     StopEnginePayload,
     UpdateSettingsPayload,
     StatusUpdatePayload,
     SwipeActionPayload,
     ActionResultPayload,
-    PopupDetectedPayload,
-    NoLikesPayload,
-    PageErrorPayload,
-    LogMessagePayload
-} from '../types/interfaces/message-broker.interface';
+    LogMessagePayload,
+    AppSettings
+} from '@/types/common.types';
