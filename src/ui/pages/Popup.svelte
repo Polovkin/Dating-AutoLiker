@@ -1,5 +1,4 @@
 <script lang="ts">
-    import AppButton from "../components/AppButton.svelte";
     import {writable} from "svelte/store";
 
     const counter = writable(0);
