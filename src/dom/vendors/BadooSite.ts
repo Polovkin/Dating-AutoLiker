@@ -17,7 +17,7 @@ export class BadooSite implements IDatingSite {
     
     // Initialize selectors for Badoo web interface
     this.selectors = {
-      likeButton: '[data-testid="like-button"], .js-profile-header-like, .like-button, [aria-label*="like"], button[title*="Like"]',
+      likeButton: 'button[data-qa="profile-card-action-vote-yes"], [data-testid="like-button"], .js-profile-header-like, .like-button, [aria-label*="like"], button[title*="Like"]',
       dislikeButton: '[data-testid="pass-button"], .js-profile-header-pass, .pass-button, [aria-label*="pass"], button[title*="Pass"]',
       profileCard: '[data-testid="profile-card"], .profile-card, .js-profile-card, .card',
       popupMatch: '[data-testid="match-modal"], .match-modal, .popup--match, .modal--match, .js-match-popup'
@@ -32,37 +32,74 @@ export class BadooSite implements IDatingSite {
    * @returns true if the action was successful, false otherwise
    */
   public swipe(action: 'like' | 'dislike'): boolean {
-    this.logger.info(`Performing ${action} action on Badoo`);
+    this.logger.info(`🎯 BadooSite.swipe() called with action: ${action}`);
 
     try {
-      // TODO: Implement actual DOM manipulation for Badoo
-      // This will include:
-      // - Finding the appropriate button element
-      // - Simulating click or swipe gesture
-      // - Handling success/failure states
-      // - Managing rate limiting and delays
-
       const buttonSelector = action === 'like'
         ? this.selectors.likeButton
         : this.selectors.dislikeButton;
 
-      this.logger.debug(`Looking for ${action} button with selector: ${buttonSelector}`);
+      this.logger.info(`🔍 Looking for ${action} button with selector: ${buttonSelector}`);
+      this.logger.debug(`📋 Full selector string: "${buttonSelector}"`);
 
-      // For now, just log the action
-      // In the future, this will find and click the actual button
-      const button = document.querySelector(buttonSelector);
+      // Split selector to check each part
+      const selectorParts = buttonSelector.split(', ');
+      this.logger.debug(`🔍 Checking ${selectorParts.length} selector parts:`);
       
-      if (button) {
-        this.logger.info(`Found ${action} button, would click it`);
-        // button.click(); // Uncomment when ready for real implementation
-        return true;
-      } else {
-        this.logger.warn(`${action} button not found with selector: ${buttonSelector}`);
-        return false;
+      for (let i = 0; i < selectorParts.length; i++) {
+        const part = selectorParts[i].trim();
+        this.logger.debug(`  ${i + 1}. "${part}"`);
+        
+        const element = document.querySelector(part);
+        if (element) {
+          this.logger.info(`✅ Found ${action} button with selector part ${i + 1}: "${part}"`);
+          this.logger.debug(`📍 Element details:`, {
+            tagName: element.tagName,
+            className: element.className,
+            id: element.id,
+            textContent: element.textContent?.trim().substring(0, 50) + '...'
+          });
+          
+          // Try to click the button
+          this.logger.info(`🖱️ Attempting to click ${action} button`);
+          try {
+            (element as HTMLElement).click();
+            this.logger.info(`✅ Successfully clicked ${action} button`);
+            return true;
+          } catch (clickError) {
+            this.logger.error(`❌ Failed to click ${action} button:`, clickError);
+            return false;
+          }
+        } else {
+          this.logger.debug(`❌ No element found for selector part ${i + 1}: "${part}"`);
+        }
       }
 
+      // If no button found, log additional debugging info
+      this.logger.warn(`❌ No ${action} button found with any selector part`);
+      this.logger.debug(`🔍 Current page URL: ${window.location.href}`);
+      this.logger.debug(`🔍 Current page title: ${document.title}`);
+      
+      // Log all buttons on the page for debugging
+      const allButtons = document.querySelectorAll('button');
+      this.logger.debug(`🔍 Found ${allButtons.length} buttons on page:`);
+      allButtons.forEach((btn, index) => {
+        if (index < 10) { // Limit to first 10 buttons
+          this.logger.debug(`  Button ${index + 1}:`, {
+            tagName: btn.tagName,
+            className: btn.className,
+            id: btn.id,
+            'data-qa': btn.getAttribute('data-qa'),
+            'data-testid': btn.getAttribute('data-testid'),
+            textContent: btn.textContent?.trim().substring(0, 30)
+          });
+        }
+      });
+
+      return false;
+
     } catch (error) {
-      this.logger.error(`Failed to perform ${action} action:`, error);
+      this.logger.error(`❌ Failed to perform ${action} action:`, error);
       return false;
     }
   }

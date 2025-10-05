@@ -12,6 +12,9 @@ import { LoggerService } from '../services/LoggerService';
 import { VENDORS } from '../dom/vendors';
 import { MessageType } from '../types/common.types';
 
+// Chrome API types
+declare const chrome: any;
+
 // Initialize logger for background script
 const logger = LoggerService.getInstance('Background');
 
@@ -32,6 +35,9 @@ setupTabListeners();
 setupChromeRuntimeListener();
 
 logger.info('Background script initialized successfully');
+
+// Auto-detect current site when popup opens
+// setupPopupListener(); // Removed - using MessageService instead
 
 /**
  * Setup additional background script listeners
@@ -74,7 +80,7 @@ function setupBackgroundListeners(): void {
   });
 
   // Listen for TEST_INJECTION message from popup
-  messageService.on('TEST_INJECTION', async () => {
+  messageService.on(MessageType.START_SWIPE, async () => {
     logger.info('Test injection requested by popup');
     
     try {
@@ -100,7 +106,7 @@ function setupBackgroundListeners(): void {
  */
 function setupTabListeners(): void {
   // Listen for tab updates
-  chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  chrome.tabs.onUpdated.addListener(async (tabId: number, changeInfo: any, tab: any) => {
     // Only inject when page is completely loaded
     if (changeInfo.status === 'complete' && tab.url) {
       await tryInjectContentScript(tab);
@@ -108,7 +114,7 @@ function setupTabListeners(): void {
   });
 
   // Listen for tab activation
-  chrome.tabs.onActivated.addListener(async (activeInfo) => {
+  chrome.tabs.onActivated.addListener(async (activeInfo: any) => {
     try {
       const tab = await chrome.tabs.get(activeInfo.tabId);
       await tryInjectContentScript(tab);
@@ -121,7 +127,7 @@ function setupTabListeners(): void {
 /**
  * Try to programmatically inject content script if needed
  */
-async function tryInjectContentScript(tab: chrome.tabs.Tab): Promise<void> {
+async function tryInjectContentScript(tab: any): Promise<void> {
   try {
     const url = tab.url || '';
     const tabId = tab.id;
@@ -168,7 +174,7 @@ async function tryInjectContentScript(tab: chrome.tabs.Tab): Promise<void> {
  * Setup direct chrome runtime message listener for popup communication
  */
 function setupChromeRuntimeListener(): void {
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  chrome.runtime.onMessage.addListener((message: any, sender: any, sendResponse: any) => {
     logger.debug('Background received message:', message);
     
     try {
@@ -178,25 +184,33 @@ function setupChromeRuntimeListener(): void {
           const activeSiteId = swiperService.getActiveSiteId();
           const site = activeSiteId ? VENDORS.getSiteById(activeSiteId) : null;
           
-          sendResponse({
+          const response = {
             isRunning: swiperService.getIsRunning(),
             activeSite: activeSiteId,
             siteLabel: site?.label || '',
             timestamp: Date.now()
-          });
+          };
+          
+          sendResponse(response);
           break;
           
           
         case 'START_SWIPE':
-          logger.info('START_SWIPE requested:', message.payload);
+          logger.info('🚀 START_SWIPE requested from popup:', message.payload);
           const siteId = message.payload?.siteId || swiperService.getActiveSiteId();
+          logger.info(`🎯 Starting swiper service for site: ${siteId}`);
           swiperService.start(siteId);
+          logger.info('✅ Swiper service started successfully');
+          
+          
           sendResponse({ success: true, message: 'Swipe started' });
           break;
           
         case 'STOP_SWIPE':
           logger.info('STOP_SWIPE requested');
           swiperService.stop();
+          
+          
           sendResponse({ success: true, message: 'Swipe stopped' });
           break;
           
@@ -228,6 +242,46 @@ function setupChromeRuntimeListener(): void {
           
           sendResponse({ success: true, message: 'Site detection processed' });
           break;
+
+        case 'DETECT_CURRENT_TAB':
+          logger.info('🔍 DETECT_CURRENT_TAB requested from popup');
+          
+          try {
+            // Get current active tab and detect site
+            chrome.tabs.query({ active: true, currentWindow: true }, async (tabs: any) => {
+              if (tabs.length > 0) {
+                const activeTab = tabs[0];
+                logger.info(`🔍 Checking active tab: ${activeTab.url}`);
+                
+                // Try to inject content script if needed
+                await tryInjectContentScript(activeTab);
+                
+                // Wait a bit for content script to load and detect
+                setTimeout(() => {
+                  // Send SITE_READY if we already have an active site
+                  const activeSiteId = swiperService.getActiveSiteId();
+                  if (activeSiteId) {
+                    const site = VENDORS.getSiteById(activeSiteId);
+                    if (site) {
+                      const siteReadyPayload = {
+                        siteId: activeSiteId,
+                        siteLabel: site.label,
+                        timestamp: Date.now()
+                      };
+                      
+                      logger.info(`📤 Sending SITE_READY to popup for existing site:`, siteReadyPayload);
+                      messageService.send(MessageType.SITE_READY, siteReadyPayload, 'popup');
+                    }
+                  }
+                }, 500);
+              }
+            });
+          } catch (error) {
+            logger.error('❌ Error detecting current tab:', error);
+          }
+          
+          sendResponse({ success: true, message: 'Current tab detection initiated' });
+          break;
           
         default:
           logger.warn('Unknown message type:', message.type);
@@ -241,4 +295,5 @@ function setupChromeRuntimeListener(): void {
     return true; // Keep message channel open for async response
   });
 }
+
 

@@ -44,7 +44,7 @@ export class MessageService {
    * @param target - Optional target component (defaults to background)
    */
   public send(type: MessageType, payload?: MessagePayload, target?: string): void {
-    this.logger.debug(`Sending message: ${type}`, payload);
+    this.logger.debug(`Sending message: ${type} to ${target || 'background'}`, payload);
 
     const message: IMessage = {
       type,
@@ -52,18 +52,18 @@ export class MessageService {
       payload
     };
 
-    // Send to background script
+    // Send to background script or popup
     if (typeof window !== 'undefined' && window.chrome?.runtime) {
       try {
         window.chrome.runtime.sendMessage(message, (response: any) => {
           if (window.chrome?.runtime.lastError) {
-            this.logger.error('Failed to send message to background:', window.chrome.runtime.lastError.message);
+            this.logger.error('Failed to send message:', window.chrome.runtime.lastError.message);
           } else {
-            this.logger.debug(`Message sent successfully: ${type}`);
+            this.logger.debug(`Message sent successfully: ${type} to ${target || 'background'}`);
           }
         });
       } catch (error) {
-        this.logger.error('Error sending message to background:', error);
+        this.logger.error('Error sending message:', error);
       }
     }
 

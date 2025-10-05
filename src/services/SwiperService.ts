@@ -1,6 +1,7 @@
 import { LoggerService } from './LoggerService';
 import { MessageService } from './MessageService';
 import { SchedulerService } from './SchedulerService';
+import { SwipeActionService } from './SwipeActionService';
 import { VENDORS } from '../dom/vendors';
 import { MessageType } from '../types/common.types';
 
@@ -18,6 +19,7 @@ export class SwiperService {
   private readonly logger: LoggerService;
   private readonly messageService: MessageService;
   private readonly schedulerService: SchedulerService;
+  private readonly swipeActionService: SwipeActionService;
   private isRunning: boolean = false;
   private activeSiteId: string | null = null;
   private swipeTimeout: NodeJS.Timeout | null = null;
@@ -26,6 +28,7 @@ export class SwiperService {
     this.logger = LoggerService.getInstance('SwiperService');
     this.messageService = MessageService.getInstance();
     this.schedulerService = SchedulerService.getInstance();
+    this.swipeActionService = SwipeActionService.getInstance();
   }
 
   /**
@@ -43,31 +46,36 @@ export class SwiperService {
    * @param siteId - The ID of the active dating site
    */
   public start(siteId?: string): void {
+    this.logger.info(`🚀 SwiperService.start() called with siteId: ${siteId || 'undefined'}`);
+    
     if (this.isRunning) {
-      this.logger.warn('SwiperService is already running');
+      this.logger.warn('⚠️ SwiperService is already running, ignoring start request');
       return;
     }
 
     // Set active site if provided
     if (siteId) {
       this.activeSiteId = siteId;
-      this.logger.info(`Starting SwiperService for site: ${siteId}`);
+      this.logger.info(`✅ Active site set to: ${siteId}`);
     } else if (!this.activeSiteId) {
-      this.logger.error('No active site set and no siteId provided');
+      this.logger.error('❌ No active site set and no siteId provided');
       return;
     }
 
     this.isRunning = true;
-    this.logger.info(`SwiperService started for ${this.activeSiteId}`);
+    this.logger.info(`🎯 SwiperService started for ${this.activeSiteId}`);
     
-    // Send status update message
+    // Send status update message to popup
+    this.logger.debug('📤 Sending STATUS_UPDATE message to popup');
     this.messageService.send(MessageType.STATUS_UPDATE, {
       isRunning: this.isRunning,
       activeSite: this.activeSiteId,
       timestamp: Date.now()
-    });
+    }, 'popup');
+
 
     // Start the swipe loop
+    this.logger.info('🔄 Starting swipe loop');
     this.startSwipeLoop();
   }
 
@@ -90,58 +98,72 @@ export class SwiperService {
 
     this.logger.info(`SwiperService stopped (was running on ${this.activeSiteId})`);
     
-    // Send status update message
+    // Send status update message to popup
+    this.logger.debug('📤 Sending STATUS_UPDATE message to popup');
     this.messageService.send(MessageType.STATUS_UPDATE, {
       isRunning: this.isRunning,
       activeSite: this.activeSiteId,
       timestamp: Date.now()
-    });
+    }, 'popup');
+
   }
 
   /**
    * Perform swipe action (like or dislike)
    * @param action - Type of swipe action to perform
    */
-  public swipe(action: SwipeAction): void {
+  public async swipe(action: SwipeAction): Promise<void> {
     if (!this.isRunning) {
       this.logger.warn('SwiperService is not running, cannot perform swipe action');
       return;
     }
 
-    this.logger.info(`Performing swipe action: ${action}`);
+    if (!this.activeSiteId) {
+      this.logger.warn('No active site set, cannot perform swipe action');
+      return;
+    }
+
+    this.logger.info(`Performing swipe action: ${action} on ${this.activeSiteId}`);
     
     try {
-      // TODO: Implement actual DOM manipulation for swipe actions
-      // This will include:
-      // - Finding swipe buttons/elements
-      // - Simulating click or swipe gestures
-      // - Handling different dating app layouts
-      
-      switch (action) {
-        case 'like':
-          this.performLikeAction();
-          break;
-        case 'dislike':
-          this.performDislikeAction();
-          break;
-        default:
-          this.logger.warn(`Unknown swipe action: ${action}`);
-          return;
-      }
-
-      // Send message about the performed action
-      this.messageService.send(MessageType.SWIPE_ACTION, {
+      // Use SwipeActionService to perform the actual swipe
+      const result = await this.swipeActionService.handleSwipeAction({
         action,
-        timestamp: Date.now(),
-        success: true
+        siteId: this.activeSiteId,
+        timestamp: Date.now()
       });
+
+      if (result.success) {
+        this.logger.info(`✅ Swipe action completed: ${action}`);
+        
+        // Send success message
+        this.messageService.send(MessageType.ACTION_RESULT, {
+          action,
+          siteId: this.activeSiteId,
+          timestamp: Date.now(),
+          success: true,
+          hasMore: result.hasMore
+        });
+      } else {
+        this.logger.warn(`❌ Swipe action failed: ${result.message}`);
+        
+        // Send error message
+        this.messageService.send(MessageType.ACTION_RESULT, {
+          action,
+          siteId: this.activeSiteId,
+          timestamp: Date.now(),
+          success: false,
+          error: result.message
+        });
+      }
 
     } catch (error) {
       this.logger.error(`Failed to perform swipe action ${action}:`, error);
       
       // Send error message
-      this.messageService.send(MessageType.SWIPE_ACTION, {
+      this.messageService.send(MessageType.ACTION_RESULT, {
         action,
+        siteId: this.activeSiteId,
         timestamp: Date.now(),
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -179,11 +201,14 @@ export class SwiperService {
    * Continuously sends swipe actions with random delays
    */
   private startSwipeLoop(): void {
+    this.logger.info(`🔄 startSwipeLoop() called - isRunning: ${this.isRunning}, activeSiteId: ${this.activeSiteId}`);
+    
     if (!this.isRunning || !this.activeSiteId) {
+      this.logger.warn('⚠️ Cannot start swipe loop - service not running or no active site');
       return;
     }
 
-    this.logger.debug('Starting swipe loop');
+    this.logger.info('✅ Starting swipe loop - calling performSwipeCycle()');
     this.performSwipeCycle();
   }
 
@@ -192,35 +217,44 @@ export class SwiperService {
    */
   private async performSwipeCycle(): Promise<void> {
     if (!this.isRunning || !this.activeSiteId) {
+      this.logger.debug('Swipe cycle skipped - service not running or no active site');
       return;
     }
 
+    this.logger.info(`🔄 Starting swipe cycle for ${this.activeSiteId}`);
+
     try {
-      // Send swipe action to content script
-      this.logger.debug(`Sending swipe action for ${this.activeSiteId}`);
-      this.messageService.send(MessageType.SWIPE_ACTION, {
-        action: 'like',
-        siteId: this.activeSiteId,
-        timestamp: Date.now()
-      });
+      // Perform the actual swipe action
+      this.logger.info(`🎯 Performing swipe action for ${this.activeSiteId}`);
+      await this.swipe('like');
+      this.logger.debug('✅ Swipe action completed');
 
       // Wait for random delay before next swipe
+      this.logger.debug('⏳ Waiting for random delay before next swipe cycle');
       await this.schedulerService.randomDelay();
+      this.logger.debug('✅ Random delay completed');
       
       // Schedule next swipe cycle if still running
       if (this.isRunning) {
+        this.logger.debug('🔄 Scheduling next swipe cycle');
         this.swipeTimeout = setTimeout(() => {
           this.performSwipeCycle();
         }, 100); // Small delay to prevent blocking
+        this.logger.debug('✅ Next swipe cycle scheduled');
+      } else {
+        this.logger.info('⏹️ Service stopped, not scheduling next cycle');
       }
 
     } catch (error) {
-      this.logger.error('Error in swipe cycle:', error);
+      this.logger.error('❌ Error in swipe cycle:', error);
       
       // Wait longer on error before retrying
+      this.logger.debug('⏳ Waiting for exponential backoff after error');
       await this.schedulerService.exponentialBackoff(0);
+      this.logger.debug('✅ Exponential backoff completed');
       
       if (this.isRunning) {
+        this.logger.info('🔄 Retrying swipe cycle after error');
         this.performSwipeCycle();
       }
     }
@@ -242,31 +276,6 @@ export class SwiperService {
     }
   }
 
-  /**
-   * Perform like action
-   * Currently just logs the action
-   */
-  private performLikeAction(): void {
-    this.logger.info('Like action performed');
-    
-    // TODO: Implement actual like functionality
-    // - Find like button (heart, swipe right, etc.)
-    // - Click or simulate swipe right gesture
-    // - Handle success/failure states
-  }
-
-  /**
-   * Perform dislike action
-   * Currently just logs the action
-   */
-  private performDislikeAction(): void {
-    this.logger.info('Dislike action performed');
-    
-    // TODO: Implement actual dislike functionality
-    // - Find dislike button (X, swipe left, etc.)
-    // - Click or simulate swipe left gesture
-    // - Handle success/failure states
-  }
 
   /**
    * Check if current page supports swiping

@@ -1,4 +1,4 @@
-import { LoggerService } from '@/services';
+import { LoggerService } from '../../services';
 import type { IDatingSite } from './IDatingSite';
 import { TinderSite } from './TinderSite';
 import { BadooSite } from './BadooSite';

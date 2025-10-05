@@ -3,72 +3,34 @@
   import { MessageService } from '@/services';
   import { MessageType } from '@/types/common.types';
 
-  let isRunning = false;
-  let activeSite: string | null = null;
-  let siteLabel: string = '';
-  let messageService: MessageService;
+  // Props from parent component
+  export let isRunning: boolean = false;
+  export let activeSite: string | null = null;
+  export let siteLabel: string = '';
+  export let messageService: MessageService;
 
   onMount(() => {
-    messageService = MessageService.getInstance();
-    
-    // Listen for site ready message
-    messageService.on(MessageType.SITE_READY, (payload) => {
-      activeSite = payload?.siteId || null;
-      siteLabel = payload?.siteLabel || '';
-    });
-
-    // Listen for status updates
-    messageService.on(MessageType.STATUS_UPDATE, (payload) => {
-      isRunning = payload?.isRunning || false;
-      activeSite = payload?.activeSite || null;
-    });
-
-    // Setup direct chrome runtime listener for SITE_READY
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      if (message.type === MessageType.SITE_READY) {
-        activeSite = message.payload?.siteId || null;
-        siteLabel = message.payload?.siteLabel || '';
-      }
-      
-      if (message.type === MessageType.STATUS_UPDATE) {
-        isRunning = message.payload?.isRunning || false;
-        activeSite = message.payload?.activeSite || null;
-      }
-    });
-
-    // Request current status with delay to ensure background is ready
-    setTimeout(() => {
-      try {
-        messageService.send(MessageType.GET_STATUS);
-      } catch (error) {
-        console.error('Failed to send GET_STATUS:', error);
-      }
-    }, 500);
-    
-    // Also request status via direct chrome runtime
-    setTimeout(() => {
-      chrome.runtime.sendMessage({ type: 'GET_STATUS' }, (response) => {
-        if (chrome.runtime.lastError) {
-          console.error('Direct GET_STATUS failed:', chrome.runtime.lastError.message);
-        } else {
-          // Update state if we have active site
-          if (response?.activeSite) {
-            activeSite = response.activeSite;
-            isRunning = response.isRunning || false;
-            siteLabel = response.siteLabel || '';
-          }
-        }
-      });
-    }, 1000);
+    console.log('🎯 SitesPage mounted with props:', { isRunning, activeSite, siteLabel });
   });
 
+  // Reactive statements to log when props change
+  $: {
+    console.log('🔄 SitesPage props changed:', { isRunning, activeSite, siteLabel });
+  }
+
   function handleStart() {
+    console.log('🚀 handleStart clicked - activeSite:', activeSite);
     if (activeSite) {
+      console.log('📤 Sending START_SWIPE message');
       messageService.send(MessageType.START_SWIPE, { siteId: activeSite });
+    } else {
+      console.log('❌ No active site to start swiping');
     }
   }
 
   function handleStop() {
+    console.log('⏹️ handleStop clicked');
+    console.log('📤 Sending STOP_SWIPE message');
     messageService.send(MessageType.STOP_SWIPE);
   }
 
@@ -108,15 +70,6 @@
           Стоп
         </button>
       {/if}
-      
-      <!-- Test button for manual injection -->
-      <button
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center text-sm"
-        on:click={handleTest}
-      >
-        <span class="mr-2">🧪</span>
-        Тест ін'єкції
-      </button>
     </div>
 
     <!-- Status indicator -->
