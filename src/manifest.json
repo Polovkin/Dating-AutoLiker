@@ -15,8 +15,8 @@
     "default_popup": "src/popup.html"
   },
   "background": {
-    "{{chrome}}.service_worker": "src/background.ts",
-    "{{firefox}}.scripts": ["src/background.ts"]
+    "{{chrome}}.service_worker": "src/background/background.ts",
+    "{{firefox}}.scripts": ["src/background/background.ts"]
   },
   "permissions": ["scripting", "activeTab", "storage"]
 }
