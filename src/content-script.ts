@@ -5,7 +5,17 @@ import { LoggerService } from "@/services";
 import { VENDORS } from "@/dom/vendors";
 
 const logger = LoggerService.getInstance('ContentScript');
+
+// Immediate log to confirm script loads
+console.log('🚀 Dating AutoLiker Content Script loaded on:', window.location.href);
+
 logger.info("Content script loaded");
+logger.info(`Current URL: ${window.location.href}`);
+logger.info(`Current hostname: ${window.location.hostname}`);
+
+// Test browser runtime availability
+logger.info(`Browser runtime available: ${!!browser?.runtime}`);
+logger.info(`Chrome runtime available: ${!!(window as any).chrome?.runtime}`);
 
 // Detect current site and notify background
 detectAndNotifySite();
@@ -15,14 +25,21 @@ detectAndNotifySite();
  */
 function detectAndNotifySite(): void {
   const hostname = window.location.hostname.toLowerCase();
-  logger.debug(`Detecting site for hostname: ${hostname}`);
+  const url = window.location.href;
+  
+  logger.info(`Content script loaded on: ${hostname}`);
+  logger.debug(`Full URL: ${url}`);
+  logger.debug(`Available sites: ${VENDORS.getAllSiteIds().join(', ')}`);
 
   // Check all registered sites
   const allSites = VENDORS.getAllSites();
+  logger.debug(`Checking ${allSites.length} registered sites`);
   
   for (const site of allSites) {
+    logger.debug(`Checking site: ${site.label} (${site.id})`);
+    
     if (site.isCurrentSite && site.isCurrentSite()) {
-      logger.info(`Detected site: ${site.label} (${site.id})`);
+      logger.info(`✅ Detected site: ${site.label} (${site.id})`);
       
       // Send SITE_DETECTED message to background
       browser.runtime.sendMessage({
@@ -31,10 +48,24 @@ function detectAndNotifySite(): void {
         payload: { siteId: site.id }
       });
       return;
+    } else {
+      logger.debug(`❌ Not ${site.label}: ${site.id}`);
     }
   }
+  
+  // If no site detected, try manual detection for Badoo
+  if (hostname.includes('badoo.com')) {
+    logger.info('🔄 Manual Badoo detection - sending SITE_DETECTED');
+    browser.runtime.sendMessage({
+      type: MessageType.SITE_DETECTED,
+      target: 'background',
+      payload: { siteId: 'badoo' }
+    });
+    return;
+  }
 
-  logger.debug('No supported dating site detected');
+  logger.warn('❌ No supported dating site detected');
+  logger.debug(`Hostname: ${hostname}, URL: ${url}`);
 }
 
 // Listen for messages from background script
@@ -55,6 +86,7 @@ browser.runtime.onMessage.addListener((message: IMessage, sender, sendResponse?:
           }
         });
       return true; // Keep message channel open for async response
+
 
     default:
       logger.warn("Unknown message type in content script", message.type);

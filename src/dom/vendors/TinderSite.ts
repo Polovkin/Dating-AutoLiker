@@ -105,10 +105,15 @@ export class TinderSite implements IDatingSite {
    */
   public isCurrentSite(): boolean {
     const hostname = window.location.hostname.toLowerCase();
+    const url = window.location.href;
     const isTinder = hostname.includes('tinder.com') || hostname.includes('gotinder.com');
-
-    this.logger.debug(`Current site check: ${hostname} -> isTinder: ${isTinder}`);
-    return isTinder;
+    
+    // For development/testing - allow localhost
+    const isDevelopment = hostname.includes('localhost') || hostname.includes('127.0.0.1');
+    const result = isTinder || isDevelopment;
+    
+    this.logger.debug(`TinderSite.isCurrentSite() - hostname: ${hostname}, URL: ${url}, result: ${result} (dev: ${isDevelopment})`);
+    return result;
   }
 
   /**

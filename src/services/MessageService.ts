@@ -54,13 +54,17 @@ export class MessageService {
 
     // Send to background script
     if (typeof window !== 'undefined' && window.chrome?.runtime) {
-      window.chrome.runtime.sendMessage(message, (response: any) => {
-        if (window.chrome?.runtime.lastError) {
-          this.logger.error('Failed to send message to background:', window.chrome.runtime.lastError.message);
-        } else {
-          this.logger.debug(`Message sent successfully: ${type}`);
-        }
-      });
+      try {
+        window.chrome.runtime.sendMessage(message, (response: any) => {
+          if (window.chrome?.runtime.lastError) {
+            this.logger.error('Failed to send message to background:', window.chrome.runtime.lastError.message);
+          } else {
+            this.logger.debug(`Message sent successfully: ${type}`);
+          }
+        });
+      } catch (error) {
+        this.logger.error('Error sending message to background:', error);
+      }
     }
 
     // Dispatch local event for same-context components

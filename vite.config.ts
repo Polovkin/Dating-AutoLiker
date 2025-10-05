@@ -24,6 +24,10 @@ export default defineConfig({
         webExtension({
             manifest: generateManifest,
             watchFilePaths: ["package.json", "manifest.json"],
+            watch: {
+                enabled: true,
+                globPattern: "src/**/*",
+            },
         }),
     ],
     resolve: {

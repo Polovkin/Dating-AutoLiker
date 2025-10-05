@@ -105,10 +105,15 @@ export class BadooSite implements IDatingSite {
    */
   public isCurrentSite(): boolean {
     const hostname = window.location.hostname.toLowerCase();
+    const url = window.location.href;
     const isBadoo = hostname.includes('badoo.com');
     
-    this.logger.debug(`Current site check: ${hostname} -> isBadoo: ${isBadoo}`);
-    return isBadoo;
+    // For development/testing - allow localhost
+    const isDevelopment = hostname.includes('localhost') || hostname.includes('127.0.0.1');
+    const result = isBadoo || isDevelopment;
+    
+    this.logger.debug(`BadooSite.isCurrentSite() - hostname: ${hostname}, URL: ${url}, result: ${result} (dev: ${isDevelopment})`);
+    return result;
   }
 
   /**

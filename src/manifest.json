@@ -18,5 +18,31 @@
     "{{chrome}}.service_worker": "src/background/background.ts",
     "{{firefox}}.scripts": ["src/background/background.ts"]
   },
-  "permissions": ["scripting", "activeTab", "storage"]
+  "{{chrome}}.content_scripts": [
+    {
+      "matches": [
+        "*://tinder.com/*",
+        "*://gotinder.com/*",
+        "*://badoo.com/*",
+        "*://localhost/*",
+        "*://127.0.0.1/*"
+      ],
+      "js": ["src/content-script.ts"],
+      "run_at": "document_end"
+    }
+  ],
+  "{{firefox}}.content_scripts": [
+    {
+      "matches": [
+        "*://tinder.com/*",
+        "*://gotinder.com/*",
+        "*://badoo.com/*",
+        "*://localhost/*",
+        "*://127.0.0.1/*"
+      ],
+      "js": ["src/content-script.ts"],
+      "run_at": "document_end"
+    }
+  ],
+  "permissions": ["scripting", "activeTab", "storage", "tabs"]
 }
