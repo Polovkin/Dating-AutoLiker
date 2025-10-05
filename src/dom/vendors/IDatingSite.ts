@@ -40,4 +40,16 @@ export interface IDatingSite {
    * @returns true if a popup is detected, false otherwise
    */
   detectPopup(): boolean;
+
+  /**
+   * Check if the current page is this dating site
+   * @returns true if we're on this dating site, false otherwise
+   */
+  isCurrentSite(): boolean;
+
+  /**
+   * Get the current profile card element
+   * @returns the profile card element or null if not found
+   */
+  getCurrentProfileCard(): Element | null;
 }

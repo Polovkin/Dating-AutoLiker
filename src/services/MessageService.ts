@@ -101,24 +101,34 @@ export class MessageService {
   public registerBackgroundListeners(swiperService: any): void {
     this.logger.info('Registering background listeners for swiper actions');
 
-    // Listen for START_ENGINE message
-    this.on(MessageType.START_ENGINE, () => {
-      this.logger.info('Received START_ENGINE message');
-      swiperService.start();
+    // Listen for START_SWIPE message
+    this.on(MessageType.START_SWIPE, (payload) => {
+      this.logger.info('Received START_SWIPE message', payload);
+      const siteId = payload?.siteId || swiperService.getActiveSiteId();
+      swiperService.start(siteId);
     });
 
-    // Listen for STOP_ENGINE message
-    this.on(MessageType.STOP_ENGINE, () => {
-      this.logger.info('Received STOP_ENGINE message');
+    // Listen for STOP_SWIPE message
+    this.on(MessageType.STOP_SWIPE, () => {
+      this.logger.info('Received STOP_SWIPE message');
       swiperService.stop();
     });
 
-    // Listen for SWIPE_ACTION message
-    this.on(MessageType.SWIPE_ACTION, (payload) => {
-      this.logger.info('Received SWIPE_ACTION message', payload);
-      if (payload?.action) {
-        swiperService.swipe(payload.action);
-      }
+    // Listen for ACTION_RESULT message
+    this.on(MessageType.ACTION_RESULT, (payload) => {
+      this.logger.debug('Received ACTION_RESULT message', payload);
+      swiperService.handleActionResult(payload);
+    });
+
+    // Legacy support for old message types
+    this.on(MessageType.START_ENGINE, () => {
+      this.logger.info('Received legacy START_ENGINE message');
+      swiperService.start();
+    });
+
+    this.on(MessageType.STOP_ENGINE, () => {
+      this.logger.info('Received legacy STOP_ENGINE message');
+      swiperService.stop();
     });
 
     this.logger.info('Background listeners registered successfully');

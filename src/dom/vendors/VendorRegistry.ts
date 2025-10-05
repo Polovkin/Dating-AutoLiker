@@ -1,6 +1,7 @@
 import { LoggerService } from '@/services';
 import type { IDatingSite } from './IDatingSite';
 import { TinderSite } from './TinderSite';
+import { BadooSite } from './BadooSite';
 
 /**
  * Registry for managing dating site implementations
@@ -37,6 +38,11 @@ export class VendorRegistry {
     const tinderSite = new TinderSite();
     this.vendors.set(tinderSite.id, tinderSite);
     this.logger.debug(`Registered vendor: ${tinderSite.label} (${tinderSite.id})`);
+
+    // Register Badoo
+    const badooSite = new BadooSite();
+    this.vendors.set(badooSite.id, badooSite);
+    this.logger.debug(`Registered vendor: ${badooSite.label} (${badooSite.id})`);
 
     // TODO: Add more dating sites here
     // const bumbleSite = new BumbleSite();
