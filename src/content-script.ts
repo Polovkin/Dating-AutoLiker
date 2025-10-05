@@ -1,13 +1,14 @@
 import browser from "webextension-polyfill";
 import type { IMessage } from "@/types/common.types";
 import { MessageType } from "@/types/common.types";
-import AppLogger from "@/services/logger.service";
+import { LoggerService } from "@/services";
 
-AppLogger.info("Content script loaded");
+const logger = LoggerService.getInstance('ContentScript');
+logger.info("Content script loaded");
 
 // Listen for messages from background script
 browser.runtime.onMessage.addListener((message: IMessage, sender, sendResponse?: (response?: any) => void) => {
-  AppLogger.debug("Content script received message", message);
+  logger.debug("Content script received message", message);
 
   switch (message.type) {
     case MessageType.SWIPE_ACTION:
@@ -25,7 +26,7 @@ browser.runtime.onMessage.addListener((message: IMessage, sender, sendResponse?:
       return true; // Keep message channel open for async response
 
     default:
-      AppLogger.warn("Unknown message type in content script", message.type);
+      logger.warn("Unknown message type in content script", message.type);
       if (sendResponse) {
         sendResponse({ success: false, error: "Unknown message type" });
       }
@@ -36,7 +37,7 @@ browser.runtime.onMessage.addListener((message: IMessage, sender, sendResponse?:
  * Handle swipe action - this would contain the actual dating site logic
  */
 async function handleSwipeAction(payload: any): Promise<any> {
-  AppLogger.debug("Handling swipe action", payload);
+  logger.debug("Handling swipe action", payload);
 
   try {
     // Simulate finding swipe buttons (this would be actual DOM manipulation)
@@ -48,7 +49,7 @@ async function handleSwipeAction(payload: any): Promise<any> {
       // Simulate clicking the button
       (likeButton as HTMLElement).click();
       
-      AppLogger.info("Swipe action completed successfully");
+      logger.info("Swipe action completed successfully");
       
       // Simulate checking if there are more profiles
       const hasMore = document.querySelector('[data-testid="profile-card"]') !== null;
@@ -59,7 +60,7 @@ async function handleSwipeAction(payload: any): Promise<any> {
         hasMore: hasMore
       };
     } else {
-      AppLogger.warn("No like button found");
+      logger.warn("No like button found");
       return {
         success: false,
         message: "No like button found on page",
@@ -67,7 +68,7 @@ async function handleSwipeAction(payload: any): Promise<any> {
       };
     }
   } catch (error) {
-    AppLogger.error("Error in swipe action", error);
+    logger.error("Error in swipe action", error);
     return {
       success: false,
       message: (error as Error).message,

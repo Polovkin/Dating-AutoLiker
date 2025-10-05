@@ -1,5 +1,6 @@
 import { LoggerService } from './LoggerService';
 import { MessageService } from './MessageService';
+import { MessageType } from '../types/common.types';
 
 /**
  * Swipe action types
@@ -44,7 +45,7 @@ export class SwiperService {
     this.logger.info('SwiperService started');
     
     // Send status update message
-    this.messageService.send('STATUS_UPDATE', {
+    this.messageService.send(MessageType.STATUS_UPDATE, {
       isRunning: this.isRunning,
       timestamp: Date.now()
     });
@@ -63,7 +64,7 @@ export class SwiperService {
     this.logger.info('SwiperService stopped');
     
     // Send status update message
-    this.messageService.send('STATUS_UPDATE', {
+    this.messageService.send(MessageType.STATUS_UPDATE, {
       isRunning: this.isRunning,
       timestamp: Date.now()
     });
@@ -101,7 +102,7 @@ export class SwiperService {
       }
 
       // Send message about the performed action
-      this.messageService.send('SWIPE_ACTION', {
+      this.messageService.send(MessageType.SWIPE_ACTION, {
         action,
         timestamp: Date.now(),
         success: true
@@ -111,7 +112,7 @@ export class SwiperService {
       this.logger.error(`Failed to perform swipe action ${action}:`, error);
       
       // Send error message
-      this.messageService.send('SWIPE_ACTION', {
+      this.messageService.send(MessageType.SWIPE_ACTION, {
         action,
         timestamp: Date.now(),
         success: false,
