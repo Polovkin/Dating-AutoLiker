@@ -29,48 +29,6 @@ export interface IMessage {
   payload?: any;
 }
 
-export interface StartEnginePayload {
-  interval: number;
-  site?: string;
-}
-
-export interface StopEnginePayload {
-  reason?: string;
-}
-
-export interface SwipeActionPayload {
-  action: 'like' | 'dislike';
-}
-
-export interface ActionResultPayload {
-  success: boolean;
-  message?: string;
-  hasMore?: boolean;
-}
-
-export interface StatusUpdatePayload {
-  isRunning: boolean;
-  currentSite?: string;
-  totalActions?: number;
-}
-
-export interface UpdateSettingsPayload {
-  interval?: number;
-  autoStart?: boolean;
-  selectedSite?: string;
-}
-
-export interface LogMessagePayload {
-  level: 'info' | 'warn' | 'error' | 'debug';
-  message: string;
-  data?: unknown;
-}
-
-export interface TimerPayload {
-  duration?: number; // in seconds
-  startTime?: number; // timestamp when timer was started
-  tabId?: number; // ID of the tab
-}
 
 export interface TimerState {
   isRunning: boolean;
@@ -79,22 +37,4 @@ export interface TimerState {
   elapsed: number; // elapsed time in seconds
   startTime?: number; // timestamp when timer was started
   pauseTime?: number; // timestamp when timer was paused
-}
-
-export interface TabState {
-  tabId: number;
-  isEngineRunning: boolean;
-  timerState: TimerState;
-  engineSettings?: any; // Settings specific to this tab
-  statistics: {
-    totalSwipes: number;
-    lastAction?: string;
-    lastActionTime?: number;
-  };
-  lastActivity: number; // timestamp of last activity
-}
-
-export interface TabManagerPayload {
-  tabId?: number;
-  [key: string]: any;
 }
