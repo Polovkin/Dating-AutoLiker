@@ -1,9 +1,9 @@
 <script lang="ts">
-    import Timer from "../components/Timer.svelte";
+
 </script>
 
 <div class="container mx-auto p-4">
-    <Timer defaultDuration={300} />
+   <h1>Test</h1>
 </div>
 
 <style>
